@@ -1,0 +1,124 @@
+#+TITLE: Integrate matplotlib figures in an org mode buffer
+* Goal
+The ultimate goal is to use org-babel as a replacement of IPython. The
+first motivation is to enable an easier version controling of the
+document. The first challenge I faced is integration of plots returned
+by ~matplotlib~ in the org buffer.
+* Capturing filename
+
+I would like to use (babel) orgmode as an interactive python
+notebook. Therefore, in order to allow the various code blocks to
+"know" each other, it is important to use the ~:session~
+option. However, once ~:session~ is used, together with ~matplotlib~
+the desired behavior is no longer in place.
+
+* Clean testing, no Matplotlib
+For the sake of testing, the following merely suppose to return the filename
+
+#+BEGIN_SRC python :session no_matplotlib :results file :exports both
+x = 'hello '
+y = 'world'
+z = x + y
+'foo.bar'
+#+END_SRC
+
+#+RESULTS:
+[[file:foo.bar]]
+
+*Passed* Indeed, the ~RESULTS~ block contains a link to the filename
+indicated by the last string.
+
+* Importing Matplotlib
+
+The following minimal example should generate a simple figure,
+~myfig.png~, and orgmode should capture it and interpret it as a
+filename to be used by the following ~RESULTS~ block.
+
+#+BEGIN_SRC python :session with_matplotlib :results file
+import matplotlib
+matplotlib.use('Agg')
+import matplotlib.pyplot as plt
+fig=plt.figure(figsize=(3,2))
+plt.plot([1,3,2])
+plt.savefig('myfig.png')
+'myfig.png'
+#+END_SRC
+
+#+RESULTS:
+[[file:]]
+
+*Failed!* This time, it doesn't work anymore. The file ~myfig.png~ is
+ properly generated, but the last string is not captured by
+ ~matplotlib~. Following is the content of the corresponding
+ interactive python session:
+
+#+BEGIN_SRC
+Process with_matplotlib finished
+Python 3.4.3 (default, Mar 10 2015, 14:53:35)
+[GCC 4.2.1 Compatible Apple LLVM 6.0 (clang-600.0.56)] on darwin
+Type "help", "copyright", "credits" or "license" for more information.
+>>> >>> >>> , '''/var/folders/kz/1c2cxn1x60n_t5p2j1p02b180000gn/T/py32771xVI''', 'exec'));
+import matplotlib
+>>> import matplotlib
+matplotlib.use('Agg')
+matplotlib.use('Agg')
+import matplotlib.pyplot as plt
+import matplotlib.pyplot as plt
+fig=plt.figure(figsize=(3,2))
+fig=plt.figure(figsize=(3,2))
+plt.plot([1,3,2])
+plt.plot([1,3,2])
+plt.savefig('myfig.png')
+plt.savefig('myfig.png')
+'myfig.png'
+'myfig.png'
+
+
+open('/var/folders/kz/1c2cxn1x60n_t5p2j1p02b180000gn/T/babel-32771x4j/python-32771-fO', 'w').write(str(_))
+open('/var/folders/kz/1c2cxn1x60n_t5p2j1p02b180000gn/T/babel-32771x4j/python-32771-fO', 'w').write(str(_))
+
+
+
+
+'org_babel_python_eoe'
+'org_babel_python_eoe'
+>>> [<matplotlib.lines.Line2D object at 0x108e01828>]
+>>> 'myfig.png'
+>>> >>> 9
+>>> >>> >>> 'org_babel_python_eoe'
+>>>
+#+END_SRC
+
+* Some background
+
+** Python Version
+#+BEGIN_SRC python :session background :results raw
+import sys
+sys.version
+#+END_SRC
+
+#+RESULTS:
+3.4.3 (default, Mar 10 2015, 14:53:35)
+[GCC 4.2.1 Compatible Apple LLVM 6.0 (clang-600.0.56)]
+
+** Matplotlib version
+#+BEGIN_SRC python :session background :results raw
+import matplotlib
+matplotlib.__version__
+#+END_SRC
+
+#+RESULTS:
+1.4.3
+
+** System
+I am running Emacs version ~GNU Emacs 24.5.1 (x86_64-apple-darwin14.1.0, NS apple-appkit-1344.72) of 2015-04-19 on tenten-slave.macports.org~
+
+The orgmode version is: ~Org-mode version 8.2.10 (8.2.10-40-gc763fa-elpaplus @ /Users/drorata/.emacs.d/elpa/org-plus-contrib-20150518/)~
+
+** Stackoverflow reference
+I also posted a question in the SE network:
+[[http://emacs.stackexchange.com/questions/11075/org-mode-python-session-does-not-return-a-file-name]]
+
+* Question
+So, my question is how to tackle/debug this issue? Can someone give me
+a hand here? That would be really great! Thanks!
