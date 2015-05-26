@@ -8,12 +8,14 @@ by ~matplotlib~ in the org buffer.
 
 I would like to use (babel) orgmode as an interactive python
 notebook. Therefore, in order to allow the various code blocks to
-"know" each other, it is important to use the ~:session~
-option. However, once ~:session~ is used, together with ~matplotlib~
-the desired behavior is no longer in place.
+"know" each other, it is important to use the ~:session~ option for
+all relevant code blocks. However, once ~:session~ is used, together
+with ~matplotlib~ the desired behavior is no longer in place under Mac
+OS X.
 
 * Clean testing, no Matplotlib
-For the sake of testing, the following merely suppose to return the filename
+For the sake of testing, the following merely suppose to return the
+filename in an orgmode'ish link format:
 
 #+BEGIN_SRC python :session no_matplotlib :results file :exports both
 x = 'hello '
@@ -57,7 +59,7 @@ Process with_matplotlib finished
 Python 3.4.3 (default, Mar 10 2015, 14:53:35)
 [GCC 4.2.1 Compatible Apple LLVM 6.0 (clang-600.0.56)] on darwin
 Type "help", "copyright", "credits" or "license" for more information.
->>> >>> >>> , '''/var/folders/kz/1c2cxn1x60n_t5p2j1p02b180000gn/T/py32771xVI''', 'exec'));
+>>> >>> >>> , '''/var/folders/kz/1c2cxn1x60n_t5p2j1p02b180000gn/T/py44814koH''', 'exec'));
 import matplotlib
 >>> import matplotlib
 matplotlib.use('Agg')
@@ -74,20 +76,24 @@ plt.savefig('myfig.png')
 'myfig.png'
 
 
-open('/var/folders/kz/1c2cxn1x60n_t5p2j1p02b180000gn/T/babel-32771x4j/python-32771-fO', 'w').write(str(_))
-open('/var/folders/kz/1c2cxn1x60n_t5p2j1p02b180000gn/T/babel-32771x4j/python-32771-fO', 'w').write(str(_))
+open('/var/folders/kz/1c2cxn1x60n_t5p2j1p02b180000gn/T/babel-44814cA3/python-44814xyN', 'w').write(str(_))
+open('/var/folders/kz/1c2cxn1x60n_t5p2j1p02b180000gn/T/babel-44814cA3/python-44814xyN', 'w').write(str(_))
 
 
 
 
 'org_babel_python_eoe'
 'org_babel_python_eoe'
->>> [<matplotlib.lines.Line2D object at 0x108e01828>]
+>>> >>> >>> >>> [<matplotlib.lines.Line2D object at 0x10cf21828>]
 >>> 'myfig.png'
 >>> >>> 9
 >>> >>> >>> 'org_babel_python_eoe'
 >>>
 #+END_SRC
+
+It seems like ~ob-python.el~ manages to create the correct temp file,
+but somehow it is not capturing the filename and doesn't plug it into
+the right place in the results block.
 
 * Some background
 
